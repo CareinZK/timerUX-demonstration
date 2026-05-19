@@ -99,55 +99,21 @@ function tick() {
   }
 }
 
+let alarmAudio = null;
+
 function startAlarm() {
   stopAlarm();
-  try {
-    alarmCtx = new AudioContext();
-    alarmGain = alarmCtx.createGain();
-    alarmGain.gain.value = 0;
-    alarmGain.connect(alarmCtx.destination);
-
-    alarmOsc = alarmCtx.createOscillator();
-    alarmOsc.type = "square";
-    alarmOsc.frequency.value = 880;
-    alarmOsc.connect(alarmGain);
-    alarmOsc.start();
-    if (alarmCtx.state === "suspended") {
-      alarmCtx.resume();
-    }
-
-    let on = true;
-    alarmPulseInterval = setInterval(() => {
-      if (!alarmCtx || !alarmGain) return;
-      on = !on;
-      alarmGain.gain.setTargetAtTime(on ? 0.2 : 0, alarmCtx.currentTime, 0.02);
-    }, 400);
-  } catch {
-    /* audio unavailable */
-  }
+  alarmAudio = new Audio("alarm-sound.mp3");
+  alarmAudio.loop = true;
+  alarmAudio.volume = 0.4;
+  alarmAudio.play().catch(() => {});
 }
 
 function stopAlarm() {
-  if (alarmPulseInterval) {
-    clearInterval(alarmPulseInterval);
-    alarmPulseInterval = null;
-  }
-  if (alarmOsc) {
-    try {
-      alarmOsc.stop();
-    } catch {
-      /* already stopped */
-    }
-    alarmOsc.disconnect();
-    alarmOsc = null;
-  }
-  if (alarmGain) {
-    alarmGain.disconnect();
-    alarmGain = null;
-  }
-  if (alarmCtx) {
-    alarmCtx.close();
-    alarmCtx = null;
+  if (alarmAudio) {
+    alarmAudio.pause();
+    alarmAudio.currentTime = 0;
+    alarmAudio = null;
   }
 }
 
@@ -163,7 +129,7 @@ function finish() {
   display.classList.add("finished");
   display.classList.remove("running");
   setSetupEnabled(true);
-  setStatus("Время вышло! Нажмите «Стоп», чтобы выключить сигнал.", "active");
+  setStatus("Время вышло! Нажмите «Стоп», чтобы выключить звук.", "active");
   updateButtons();
   updateDisplay();
   startAlarm();
