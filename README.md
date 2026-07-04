@@ -67,20 +67,6 @@ Then open `index.html` in a browser.
 
 For a more reliable local-development experience, run the project through a local web server. For example, with Visual Studio Code and the Live Server extension, open `index.html` and choose **Open with Live Server**.
 
-## Project structure
-
-```text
-timerUX-demonstration/
-├── index.html       # Main page
-├── good.html        # Good UX timer
-├── bad.html         # Bad UX timer
-├── app.js           # Shared timer logic
-├── bad.js           # Logic specific to the bad UX timer
-├── styles.css       # Shared styles
-├── bad.css          # Styles specific to the bad UX timer
-└── alarm-sound.mp3  # Timer alarm sound
-```
-
 ## Contributing
 
 Contributions, feedback, and UX observations are welcome.
@@ -106,4 +92,4 @@ To report a bug or usability issue, please open a GitHub issue and include:
 
 ## License
 
-A license has not been added yet.
+The project uses MIT license.
