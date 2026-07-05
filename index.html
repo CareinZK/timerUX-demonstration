@@ -1,33 +1,55 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Демо UX таймера</title>
+  <title>Timer UX Demo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem("timerux-theme") === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      } catch (_) {}
+    })();
+  </script>
 </head>
-<body>
+<body data-i18n-title="index.title">
+  <button type="button" class="theme-toggle" aria-pressed="false">
+    <svg class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2a1 1 0 0 1 1 1v1.2a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm0 17.8a1 1 0 0 1 1 1V22a1 1 0 1 1-2 0v-1.2a1 1 0 0 1 1-1ZM4.22 4.22a1 1 0 0 1 1.42 0l.85.85A1 1 0 1 1 5.07 6.49l-.85-.85a1 1 0 0 1 0-1.42Zm12.29 12.29a1 1 0 0 1 1.42 0l.85.85a1 1 0 1 1-1.42 1.42l-.85-.85a1 1 0 0 1 0-1.42ZM2 11a1 1 0 0 1 1-1h1.2a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm17.8 0a1 1 0 0 1 1-1H22a1 1 0 1 1 0 2h-1.2a1 1 0 0 1-1-1ZM4.22 19.78a1 1 0 0 1 0-1.42l.85-.85a1 1 0 1 1 1.42 1.42l-.85.85a1 1 0 0 1-1.42 0Zm12.29-12.29a1 1 0 0 1 0-1.42l.85-.85a1 1 0 1 1 1.42 1.42l-.85.85a1 1 0 0 1-1.42 0ZM12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"/>
+    </svg>
+  
+    <svg class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 12.8A8.8 8.8 0 0 1 11.2 3a1 1 0 0 0-1.1 1.3A7.8 7.8 0 1 0 19.7 14.1a1 1 0 0 0-1.3-1.1A8.7 8.7 0 0 1 21 12.8Z"/>
+    </svg>
+  </button>
   <main class="app app--choice">
     <header class="header">
-      <h1>UX таймер</h1>
-      <p class="subtitle">Выберите версию сайта</p>
+      <nav class="lang-switch" aria-label="Language" data-i18n-aria-label="common.langSwitchAria">
+        <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="true" lang="en">English</button>
+        <button type="button" class="lang-switch__btn" data-lang="ru" aria-pressed="false" lang="ru">Русский</button>
+      </nav>
+      <h1 data-i18n="index.heading">Timer UX</h1>
+      <p class="subtitle" data-i18n="index.subtitle">Choose a site version</p>
     </header>
 
-    <section class="choice-card" aria-label="Выбор варианта таймера">
+    <section class="choice-card" data-i18n-aria-label="index.choiceAria" aria-label="Choose timer variant">
+      <p class="choice-card__subheader" data-i18n="index.subheader">General timer</p>
+
       <a class="choice-option choice-option--good" href="good.html">
-        <span class="choice-label">Хороший UX</span>
+        <span class="choice-label" data-i18n="index.goodLabel">Good UX</span>
       </a>
+
       <a class="choice-option choice-option--bad" href="bad.html">
-        <span class="choice-label">Плохой UX</span>
+        <span class="choice-label" data-i18n="index.badLabel">Bad UX</span>
       </a>
-           <p class="project-note">
-    Создано специально для индивидуального проекта
-    "Пользовательский опыт при разработке сайта"
-</p>
-    </section
+    </section>
   </main>
+  <script src="i18n.js"></script>
 </body>
 </html>

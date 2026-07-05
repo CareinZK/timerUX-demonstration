@@ -18,6 +18,12 @@ let isRunning = false;
 let isPaused = false;
 let isFinished = false;
 let alarmAudio = null;
+let statusKey = "";
+let statusType = "";
+
+function t(key) {
+  return window.i18n ? window.i18n.t(key) : key;
+}
 
 function clampInput(input, max) {
   let value = parseInt(input.value, 10);
@@ -61,8 +67,10 @@ function updateDisplay() {
   updateRing();
 }
 
-function setStatus(message, type = "") {
-  statusEl.textContent = message;
+function setStatus(key, type = "") {
+  statusKey = key;
+  statusType = type;
+  statusEl.textContent = key ? t(key) : "";
   statusEl.className = "status" + (type ? ` ${type}` : "");
 }
 
@@ -74,31 +82,31 @@ function updateButtons() {
   const idle = !isRunning && !isPaused && !isFinished;
 
   if (isFinished) {
-    toggleBtn.textContent = "Старт";
+    toggleBtn.textContent = t("good.btnStart");
     toggleBtn.disabled = true;
 
-    resetBtn.textContent = "Стоп";
+    resetBtn.textContent = t("good.btnStop");
     resetBtn.disabled = false;
     resetBtn.classList.add("is-stop");
   } else if (isRunning) {
-    toggleBtn.textContent = "Пауза";
+    toggleBtn.textContent = t("good.btnPause");
     toggleBtn.disabled = false;
 
-    resetBtn.textContent = "Сброс";
+    resetBtn.textContent = t("good.btnReset");
     resetBtn.disabled = false;
     resetBtn.classList.remove("is-stop");
   } else if (isPaused) {
-    toggleBtn.textContent = "Продолжить";
+    toggleBtn.textContent = t("good.btnContinue");
     toggleBtn.disabled = false;
 
-    resetBtn.textContent = "Сброс";
+    resetBtn.textContent = t("good.btnReset");
     resetBtn.disabled = false;
     resetBtn.classList.remove("is-stop");
   } else {
-    toggleBtn.textContent = "Старт";
+    toggleBtn.textContent = t("good.btnStart");
     toggleBtn.disabled = false;
 
-    resetBtn.textContent = "Сброс";
+    resetBtn.textContent = t("good.btnReset");
     resetBtn.disabled = true;
     resetBtn.classList.remove("is-stop");
   }
@@ -145,7 +153,7 @@ function finish() {
   display.classList.add("finished");
   display.classList.remove("running");
   setSetupEnabled(true);
-  setStatus("Время вышло!", "active");
+  setStatus("good.statusTimeUp", "active");
   updateButtons();
   updateDisplay();
   startAlarm();
@@ -162,14 +170,14 @@ function start() {
     display.classList.add("running");
     display.classList.remove("finished");
     setSetupEnabled(false);
-    setStatus("Таймер запущен…");
+    setStatus("good.statusRunning");
     updateButtons();
     return;
   }
 
   const duration = readDuration();
   if (duration <= 0) {
-    setStatus("Укажите длительность больше нуля.", "error");
+    setStatus("good.statusDurationError", "error");
     return;
   }
 
@@ -185,7 +193,7 @@ function start() {
   display.classList.add("running");
   display.classList.remove("finished");
   setSetupEnabled(false);
-  setStatus("Таймер запущен…");
+  setStatus("good.statusRunning");
   updateDisplay();
   updateButtons();
 }
@@ -198,7 +206,7 @@ function pause() {
   isPaused = true;
   remainingSeconds = Math.max(0, Math.round((endTimestamp - Date.now()) / 1000));
   endTimestamp = null;
-  setStatus("Пауза");
+  setStatus("good.statusPause");
   updateButtons();
 }
 
@@ -262,6 +270,13 @@ setupForm.addEventListener("submit", (e) => {
 if ("Notification" in window && Notification.permission === "default") {
   Notification.requestPermission();
 }
+
+document.addEventListener("languagechange", () => {
+  if (statusKey) {
+    setStatus(statusKey, statusType);
+  }
+  updateButtons();
+});
 
 ringFg.style.strokeDasharray = String(CIRCUMFERENCE);
 remainingSeconds = readDuration();

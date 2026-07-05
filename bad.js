@@ -16,6 +16,12 @@ let endTimestamp = null;
 let isRunning = false;
 let isPaused = false;
 let isFinished = false;
+let msgKey = "";
+let msgIsError = false;
+
+function t(key, params) {
+  return window.i18n ? window.i18n.t(key, params) : key;
+}
 
 function populateSelect(select, max) {
   for (let i = 0; i <= max; i += 1) {
@@ -42,11 +48,13 @@ function formatClock(total) {
   const h = Math.floor(total / 3600);
   const m = Math.floor((total % 3600) / 60);
   const s = total % 60;
-  return `${pad2(h)} ч. ${pad2(m)} мин. ${pad2(s)} сек.`;
+  return t("bad.clockFormat", { h: pad2(h), m: pad2(m), s: pad2(s) });
 }
 
-function setMsg(text, isError = false) {
-  msgEl.textContent = text;
+function setMsg(key, isError = false) {
+  msgKey = key;
+  msgIsError = isError;
+  msgEl.textContent = key ? t(key) : "";
   msgEl.className = "bad-msg" + (isError ? " is-error" : "");
 }
 
@@ -58,34 +66,32 @@ function setSelectsEnabled(enabled) {
 
 function updateReadout() {
   if (isFinished) {
-    readout.innerHTML =
-      "<strong>СТАТУС: ИСТЕКЛО</strong><br>Обратный отсчёт достиг нуля. Закройте системное уведомление, затем нажмите «Восстановить по умолчанию».";
+    readout.innerHTML = t("bad.readoutExpired");
     return;
   }
 
   if (isRunning) {
     readout.innerHTML =
-      `<strong>${remainingSeconds}</strong> (секунд)<br>` +
-      `Приблизительная расшифровка: ${formatClock(remainingSeconds)}<br>` +
-      "Примечание: значение обновляется раз в секунду.";
+      `<strong>${remainingSeconds}</strong> ${t("bad.readoutRunningSeconds")}<br>` +
+      `${t("bad.readoutRunningApprox")} ${formatClock(remainingSeconds)}<br>` +
+      t("bad.readoutRunningNote");
     return;
   }
 
   if (isPaused) {
     readout.innerHTML =
-      `<strong>ПАУЗА</strong><br>${remainingSeconds} секунд на удержании.<br>` +
-      `${formatClock(remainingSeconds)}`;
+      `<strong>${t("bad.readoutPaused")}</strong><br>${remainingSeconds} ${t("bad.readoutPausedHold")}<br>` +
+      formatClock(remainingSeconds);
     return;
   }
 
   if (appliedSeconds > 0) {
     readout.innerHTML =
-      `Ожидающая длительность (зафиксирована): <strong>${appliedSeconds}</strong> секунд всего.<br>` +
+      `${t("bad.readoutPending")} <strong>${appliedSeconds}</strong> ${t("bad.readoutPendingTotal")}<br>` +
       formatClock(appliedSeconds) +
-      "<br>Отметьте поле ниже, затем запустите.";
+      `<br>${t("bad.readoutPendingHint")}`;
   } else {
-    readout.innerHTML =
-      "Длительность не зафиксирована. Настройте списки, затем нажмите «Зафиксировать длительность на устройстве».";
+    readout.innerHTML = t("bad.readoutNotApplied");
   }
 }
 
@@ -95,24 +101,24 @@ function updateControls() {
 
   if (isFinished) {
     proceedBtn.disabled = true;
-    proceedBtn.textContent = "Запустить обратный отсчёт (истекло)";
+    proceedBtn.textContent = t("bad.proceedBtnExpired");
     return;
   }
 
   if (isRunning) {
     proceedBtn.disabled = true;
-    proceedBtn.textContent = "Запустить обратный отсчёт (недоступно во время работы)";
+    proceedBtn.textContent = t("bad.proceedBtnRunning");
     return;
   }
 
   if (isPaused) {
     proceedBtn.disabled = !confirmCheck.checked;
-    proceedBtn.textContent = "Запустить обратный отсчёт (продолжить — нужно подтверждение)";
+    proceedBtn.textContent = t("bad.proceedBtnPaused");
     return;
   }
 
   proceedBtn.disabled = !(appliedSeconds > 0 && confirmCheck.checked);
-  proceedBtn.textContent = "Запустить обратный отсчёт";
+  proceedBtn.textContent = t("bad.proceedBtn");
 }
 
 function tick() {
@@ -136,7 +142,7 @@ function finish() {
   setMsg("");
   updateReadout();
   updateControls();
-  alert("Таймер завершён.\n\nОбратный отсчёт окончен. Нажмите ОК, чтобы продолжить.");
+  alert(t("bad.alertFinished"));
 }
 
 function applyDuration() {
@@ -144,21 +150,21 @@ function applyDuration() {
 
   const seconds = readSelects();
   if (seconds <= 0) {
-    setMsg("Длительность должна быть больше нуля. Настройте списки и зафиксируйте снова.", true);
+    setMsg("bad.msgDurationZero", true);
     appliedSeconds = 0;
     updateReadout();
     updateControls();
     return;
   }
 
-  if (!window.confirm("Зафиксировать эту длительность?\n\n")) {
+  if (!window.confirm(t("bad.confirmApply"))) {
     return;
   }
 
   appliedSeconds = seconds;
   remainingSeconds = seconds;
   confirmCheck.checked = false;
-  setMsg("Длительность зафиксирована. Отметьте поле подтверждения, затем запустите.");
+  setMsg("bad.msgApplied");
   updateReadout();
   updateControls();
 }
@@ -167,31 +173,34 @@ function activate() {
   if (isRunning) return;
 
   if (!confirmCheck.checked) {
-    setMsg("Перед запуском необходимо отметить поле подтверждения.", true);
+    setMsg("bad.msgConfirmRequired", true);
     return;
   }
 
   if (isPaused) {
-    if (!window.confirm("Продолжить обратный отсчёт с приостановленного значения?")) return;
+    if (!window.confirm(t("bad.confirmResume"))) return;
     endTimestamp = Date.now() + remainingSeconds * 1000;
     isRunning = true;
     isPaused = false;
     intervalId = setInterval(tick, 1000);
     setSelectsEnabled(false);
-    setMsg("Обратный отсчёт продолжается.");
+    setMsg("bad.msgCountdownRunning");
     updateReadout();
     updateControls();
     return;
   }
 
   if (appliedSeconds <= 0) {
-    setMsg("Сначала зафиксируйте длительность.", true);
+    setMsg("bad.msgApplyFirst", true);
     return;
   }
 
   if (
     !window.confirm(
-      `Запустить обратный отсчёт на ${appliedSeconds} секунд?\n\n(${formatClock(appliedSeconds)})`
+      t("bad.confirmStart", {
+        seconds: appliedSeconds,
+        clock: formatClock(appliedSeconds),
+      })
     )
   ) {
     return;
@@ -204,14 +213,14 @@ function activate() {
   isFinished = false;
   intervalId = setInterval(tick, 1000);
   setSelectsEnabled(false);
-  setMsg("Обратный отсчёт продолжается.");
+  setMsg("bad.msgCountdownRunning");
   updateReadout();
   updateControls();
 }
 
 function cease() {
   if (!isRunning) return;
-  if (!window.confirm("Остановить течение времени?\n\nОбратный отсчёт будет приостановлен.")) return;
+  if (!window.confirm(t("bad.confirmCease"))) return;
 
   clearInterval(intervalId);
   intervalId = null;
@@ -220,7 +229,7 @@ function cease() {
   remainingSeconds = Math.max(0, Math.round((endTimestamp - Date.now()) / 1000));
   endTimestamp = null;
   setSelectsEnabled(false);
-  setMsg("Пауза. Для продолжения нужно подтверждение.");
+  setMsg("bad.msgPaused");
   confirmCheck.checked = false;
   updateReadout();
   updateControls();
@@ -228,7 +237,7 @@ function cease() {
 
 function restore() {
   if (isRunning) return;
-  if (!window.confirm("Восстановить заводские настройки таймера?\n\nЗафиксированная длительность будет сброшена.")) {
+  if (!window.confirm(t("bad.confirmRestore"))) {
     return;
   }
 
@@ -254,7 +263,7 @@ function restore() {
 
 function preset(seconds) {
   if (isRunning || isPaused || isFinished) return;
-  if (!window.confirm(`Загрузить пресет на ${seconds} секунд?`)) {
+  if (!window.confirm(t("bad.confirmPreset", { seconds }))) {
     return;
   }
 
@@ -263,7 +272,7 @@ function preset(seconds) {
   secondsSelect.value = String(seconds % 60);
   appliedSeconds = 0;
   confirmCheck.checked = false;
-  setMsg("Пресет загружен в списки. Нажмите «Зафиксировать длительность на устройстве».");
+  setMsg("bad.msgPresetLoaded");
   updateReadout();
   updateControls();
 }
@@ -284,6 +293,14 @@ document.querySelectorAll("[data-preset]").forEach((link) => {
     e.preventDefault();
     preset(parseInt(link.dataset.preset, 10));
   });
+});
+
+document.addEventListener("languagechange", () => {
+  if (msgKey) {
+    setMsg(msgKey, msgIsError);
+  }
+  updateReadout();
+  updateControls();
 });
 
 updateReadout();

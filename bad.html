@@ -1,75 +1,79 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Таймер — плохой UX</title>
+  <title>Timer — Bad UX</title>
   <link rel="stylesheet" href="bad.css" />
 </head>
-<body class="bad-ux">
+<body class="bad-ux" data-i18n-title="bad.title">
   <main class="bad-wrap">
-    <h1>ТАЙМЕР</h1>
-    <p class="bad-lede">
-      ИНСТРУКЦИЯ: (1) Выберите количество часов, минут и секунд из выпадающих списков. (2) Зафиксируйте длительность на
-      устройстве. (3) Подтвердите длительность.. (4) Запустите обратный отсчёт. Во время работы оставшееся время
-      показывается в виде секунд.
+    <header class="bad-header">
+      <nav class="lang-switch lang-switch--bad" aria-label="Language" data-i18n-aria-label="common.langSwitchAria">
+        <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="true" lang="en">English</button>
+        <button type="button" class="lang-switch__btn" data-lang="ru" aria-pressed="false" lang="ru">Русский</button>
+      </nav>
+      <h1 data-i18n="bad.heading">TIMER</h1>
+    </header>
+    <p class="bad-lede" data-i18n="bad.lede">
+      INSTRUCTIONS: (1) Choose hours, minutes, and seconds from the dropdown lists. (2) Apply the duration to the device. (3) Confirm the duration. (4) Start the countdown. While running, remaining time is shown in seconds.
     </p>
 
     <section class="bad-panel" aria-live="polite">
-      <span class="bad-panel-title">Регистр вывода</span>
-      <div class="bad-readout" id="readout">Загрузка…</div>
+      <span class="bad-panel-title" data-i18n="bad.panelTitle">Output register</span>
+      <div class="bad-readout" id="readout" data-i18n="bad.readoutLoading">Loading…</div>
 
       <form class="bad-fields" id="duration-form" onsubmit="return false;">
         <div class="bad-field">
-          <label for="hours-select">Кол-во ч</label>
+          <label for="hours-select" data-i18n="bad.hoursLabel">Hrs qty</label>
           <select id="hours-select" name="hours"></select>
         </div>
         <div class="bad-field">
-          <label for="minutes-select">Кол-во мин</label>
+          <label for="minutes-select" data-i18n="bad.minutesLabel">Min qty</label>
           <select id="minutes-select" name="minutes"></select>
         </div>
         <div class="bad-field">
-          <label for="seconds-select">Кол-во сек</label>
+          <label for="seconds-select" data-i18n="bad.secondsLabel">Sec qty</label>
           <select id="seconds-select" name="seconds"></select>
         </div>
         <div class="bad-apply-row">
-          <button type="button" class="bad-btn" id="apply-btn">Зафиксировать длительность на устройстве</button>
+          <button type="button" class="bad-btn" id="apply-btn" data-i18n="bad.applyBtn">Apply duration to device</button>
         </div>
       </form>
 
       <p class="bad-checkbox-row">
         <input type="checkbox" id="confirm-check" />
-        <label for="confirm-check">
-          Подтверждаю, что запуск начнёт обратный отсчёт и что длительность уже зафиксирована.
+        <label for="confirm-check" data-i18n="bad.confirmLabel">
+          I confirm that starting will begin the countdown and that the duration has already been applied.
         </label>
       </p>
       <p class="bad-msg" id="msg"></p>
     </section>
 
     <div class="bad-controls">
-      <button type="button" class="bad-btn" id="restore-btn">Восстановить по умолчанию</button>
-      <button type="button" class="bad-btn" id="cease-btn" disabled>Остановить течение времени</button>
-      <button type="button" class="bad-btn" id="proceed-btn" disabled>Запустить обратный отсчёт</button>
+      <button type="button" class="bad-btn" id="restore-btn" data-i18n="bad.restoreBtn">Restore defaults</button>
+      <button type="button" class="bad-btn" id="cease-btn" disabled data-i18n="bad.ceaseBtn">Cease time flow</button>
+      <button type="button" class="bad-btn" id="proceed-btn" disabled data-i18n="bad.proceedBtn">Start countdown</button>
     </div>
 
     <p class="bad-presets">
-      Быстрая загрузка:
-      <a href="#" data-preset="60">шестьдесят сек</a>
-      <a href="#" data-preset="300">триста сек</a>
-      <a href="#" data-preset="600">шестьсот сек</a>
-      <a href="#" data-preset="1500">полторы тысячи сек</a>
+      <span data-i18n="bad.presetsLabel">Quick load:</span>
+      <a href="#" data-preset="60" data-i18n="bad.preset60">sixty sec</a>
+      <a href="#" data-preset="300" data-i18n="bad.preset300">three hundred sec</a>
+      <a href="#" data-preset="600" data-i18n="bad.preset600">six hundred sec</a>
+      <a href="#" data-preset="1500" data-i18n="bad.preset1500">fifteen hundred sec</a>
     </p>
 
-    <p class="bad-note">
-      Пауза доступна только во время работы. Сброс очищает зафиксированные значения и возвращает списки к 0:05:00.
-      По завершении показывается блокирующее системное уведомление.
+    <p class="bad-note" data-i18n="bad.note">
+      Pause is only available while running. Reset clears applied values and returns the lists to 0:05:00. When finished, a blocking system notification is shown.
     </p>
 
     <footer class="bad-footer">
-      <a href="index.html">Вернуться к выбору варианта</a>
+      <a href="index.html" data-i18n="common.backToChoice">Back to version selection</a>
     </footer>
   </main>
 
+  <script src="i18n.js"></script>
   <script src="bad.js"></script>
 </body>
 </html>

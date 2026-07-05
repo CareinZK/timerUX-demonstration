@@ -1,18 +1,40 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Таймер — хороший UX</title>
+  <title>Timer — Good UX</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem("timerux-theme") === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      } catch (_) {}
+    })();
+  </script>
 </head>
-<body>
+<body data-i18n-title="good.title">
+  <button type="button" class="theme-toggle" aria-pressed="false">
+    <svg class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2a1 1 0 0 1 1 1v1.2a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm0 17.8a1 1 0 0 1 1 1V22a1 1 0 1 1-2 0v-1.2a1 1 0 0 1 1-1ZM4.22 4.22a1 1 0 0 1 1.42 0l.85.85A1 1 0 1 1 5.07 6.49l-.85-.85a1 1 0 0 1 0-1.42Zm12.29 12.29a1 1 0 0 1 1.42 0l.85.85a1 1 0 1 1-1.42 1.42l-.85-.85a1 1 0 0 1 0-1.42ZM2 11a1 1 0 0 1 1-1h1.2a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm17.8 0a1 1 0 0 1 1-1H22a1 1 0 1 1 0 2h-1.2a1 1 0 0 1-1-1ZM4.22 19.78a1 1 0 0 1 0-1.42l.85-.85a1 1 0 1 1 1.42 1.42l-.85.85a1 1 0 0 1-1.42 0Zm12.29-12.29a1 1 0 0 1 0-1.42l.85-.85a1 1 0 1 1 1.42 1.42l-.85.85a1 1 0 0 1-1.42 0ZM12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"/>
+    </svg>
+  
+    <svg class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 12.8A8.8 8.8 0 0 1 11.2 3a1 1 0 0 0-1.1 1.3A7.8 7.8 0 1 0 19.7 14.1a1 1 0 0 0-1.3-1.1A8.7 8.7 0 0 1 21 12.8Z"/>
+    </svg>
+  </button>
   <main class="app">
     <header class="header">
-      <h1>Таймер</h1>
+      <nav class="lang-switch" aria-label="Language" data-i18n-aria-label="common.langSwitchAria">
+        <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="true" lang="en">English</button>
+        <button type="button" class="lang-switch__btn" data-lang="ru" aria-pressed="false" lang="ru">Русский</button>
+      </nav>
+      <h1 data-i18n="good.heading">Timer</h1>
     </header>
 
     <section class="timer-card" aria-live="polite">
@@ -25,45 +47,46 @@
 
       <div class="display is-hidden" id="display" role="timer" aria-atomic="true" aria-hidden="true">00:00:00</div>
 
-      <form class="setup" id="setup-form" aria-label="Установка длительности таймера">
+      <form class="setup" id="setup-form" data-i18n-aria-label="good.setupAria" aria-label="Set timer duration">
         <div class="time-inputs">
           <label class="time-field">
-            <span>Часы</span>
+            <span data-i18n="good.hours">Hours</span>
             <input type="number" id="hours" min="0" max="99" value="0" inputmode="numeric" />
           </label>
           <span class="colon" aria-hidden="true">:</span>
           <label class="time-field">
-            <span>Минуты</span>
+            <span data-i18n="good.minutes">Minutes</span>
             <input type="number" id="minutes" min="0" max="59" value="5" inputmode="numeric" />
           </label>
           <span class="colon" aria-hidden="true">:</span>
           <label class="time-field">
-            <span>Секунды</span>
+            <span data-i18n="good.seconds">Seconds</span>
             <input type="number" id="seconds" min="0" max="59" value="0" inputmode="numeric" />
           </label>
         </div>
 
-        <div class="presets" aria-label="Быстрые пресеты">
-          <button type="button" class="preset" data-seconds="60">1 мин</button>
-          <button type="button" class="preset" data-seconds="300">5 мин</button>
-          <button type="button" class="preset" data-seconds="600">10 мин</button>
-          <button type="button" class="preset" data-seconds="1500">25 мин</button>
+        <div class="presets" data-i18n-aria-label="good.presetsAria" aria-label="Quick presets">
+          <button type="button" class="preset" data-seconds="60" data-i18n="good.preset1min">1 min</button>
+          <button type="button" class="preset" data-seconds="300" data-i18n="good.preset5min">5 min</button>
+          <button type="button" class="preset" data-seconds="600" data-i18n="good.preset10min">10 min</button>
+          <button type="button" class="preset" data-seconds="1500" data-i18n="good.preset25min">25 min</button>
         </div>
       </form>
 
       <div class="controls">
-        <button type="button" class="btn btn-primary" id="toggle-btn">Старт</button>
-        <button type="button" class="btn btn-ghost" id="reset-btn" disabled>Сброс</button>
+        <button type="button" class="btn btn-primary" id="toggle-btn" data-i18n="good.btnStart">Start</button>
+        <button type="button" class="btn btn-ghost" id="reset-btn" disabled data-i18n="good.btnReset">Reset</button>
       </div>
     </section>
 
     <p class="status" id="status" role="status"></p>
 
     <footer class="app-footer">
-      <a class="app-back" href="index.html">Вернуться к выбору варианта</a>
+      <a class="app-back" href="index.html" data-i18n="common.backToChoice">Back to version selection</a>
     </footer>
   </main>
 
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
